@@ -61,7 +61,9 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+            
         </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
@@ -79,13 +81,90 @@
                 </div>
             @endif
 
-            <div class="content">
+            <div class="content" ng-app="myApp" ng-controller="myCtrl" ng-init="list()">
                 <div class="title m-b-md">
-                    Hellow Vishmantha.
+                    Laravel
                 </div>
-
                 
+
+                <br>
+                Name: <input type="text" name="name" ng-model="name"><br>
+                Description: <input type="text" name="description" ng-model="description"><br>
+                <button type="button" ng-click="save()">save</button>
+                <br>
+                <table border="1">
+                <tr ng-repeat="task in tasks">
+                    <td ng-bind="task.name">
+                    <td ng-bind="task.description">
+                        
+                    </td>
+                </tr>
+                </div>
+                </table>
             </div>
+            
+
         </div>
+
+
+        
+
+
+        <script type="text/javascript">
+            var app = angular.module('myApp',[]);
+            //controller
+            app.controller('myCtrl', function($scope,$http){
+                $scope.save = function(){
+                    console.log($scope.name); //view consol results
+                    console.log($scope.description); //view consol results
+
+                    $http({
+
+                        url : "{{url('/api/insert')}} ",
+                        method : "POST",
+                        data : {
+                            "name" : $scope.name,
+                            "description" : $scope.description
+                        }
+
+                        }).then(function(response){
+                            alert('success');
+                            $scope.list();
+                        },function(response){
+                            alert('failed');
+                        });
+
+                    
+                }
+
+                $scope.list = function(){
+                        $http.get("{{url('/api/show')}}")
+                        .then(function(response){
+                            $scope.tasks = response.data;
+                        });
+                }
+
+                $scope.edit_task = {};
+                // initialize update action
+                $scope.initEdit = function (index) {
+                    $scope.errors = [];
+                    $scope.edit_task = $scope.tasks[index];
+                    $("#edit_task").modal('show');
+                };
+
+                // update the given task
+                $scope.updateTask = function () {
+                    $http.patch('/task/' + $scope.edit_task.id, {
+                        name: $scope.edit_task.name,
+                        description: $scope.edit_task.description
+                    }).then(function success(e) {
+                        $scope.errors = [];
+                        $("#edit_task").modal('hide');
+                    }, function error(error) {
+                        $scope.recordErrors(error);
+                    });
+                };
+            });
+        </script>
     </body>
 </html>
