@@ -9,3 +9,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('insert','TaskController@store');
 Route::get('show','TaskController@show');
+
