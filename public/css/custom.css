@@ -1,0 +1,232 @@
+
+/* 
+    Created on : Jul 30, 2020, 11:27:19 AM
+    Author     : Kanchana
+*/
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.stock-loader
+{
+    position:fixed;
+    width:100%;;
+    height:100%;;
+    left:0;
+    top:0;
+    z-index:11100;
+    background-color: #555;
+    opacity:0.6;
+    background-image:url('../images/loading.gif');
+    background-repeat:no-repeat;
+    background-position:center center;
+    background-size: 64px 64px
+}
+
+
+.card-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card .card-header .card-title{
+    font-size: 18px;
+}
+
+.ui-pnotify .brighttheme.brighttheme-error{
+    background-image: none;
+}
+
+.form-group label{
+    color: #535a64;
+}
+
+.table thead th{
+    border-bottom-width: 1px;
+}
+
+
+.required::after{
+    content: ' *';
+    color:red;
+}
+
+
+.table-striped tbody tr:nth-of-type(2n+1), .thead-default th {
+    background-color: #f7f8fa;
+}
+
+.table td{
+    color:#263a5b;
+}
+
+.leftbar{
+    width:300px;
+}
+
+.rightbar{
+    margin-left: 300px;
+}
+
+.topbar{
+    left:300px;
+}
+
+.color-purple{
+    color: #6f42c1;
+}
+
+.color-coolblue{
+    color: #007bff;
+}
+
+.color-red{
+    color:#dc3545;
+}
+
+.color-green{
+   color: #28a745;
+}
+
+.color-orange{
+    color:#fd7e14;
+}
+
+
+div.group{
+    
+    font-size:1.1em;
+    margin-bottom: 1em;
+    color:#343a40;
+    padding: 0.5em;
+
+    border: 1px solid  #f8f9fa;
+    
+}
+
+div.group:nth-child(2n){
+    background-color: #f8f9fa;
+}
+
+div.group label
+{
+    font-weight: bold;
+}
+
+.vertical-menu .vertical-submenu > li > a,.vertical-menu > li > a
+{
+    color : #9899ac;
+}
+
+.vertical-menu .vertical-submenu > li > a.active, .vertical-menu > li.active > a
+{
+    color : #ffffff;
+}
+
+.breadcrumbbar{
+    background-color:transparent;
+    padding:0px;
+}
+
+.vertical-menu .vertical-submenu > li.active > a > .mdi, .vertical-menu .vertical-submenu > li > a:hover,
+.vertical-menu > li:hover > a,
+.vertical-menu .vertical-submenu > li > a:hover > .mdi{
+    color : #ffffff;
+}
+
+.copyright{
+    padding:0;
+    margin :2em 0 1em 0;
+    text-align: left;
+    font-style: italic;
+}
+
+.copyright2{
+    padding:0;
+    margin :2em 0 1em 0;
+    font-style: italic;
+    color: white;
+    position: absolute;
+    font-size:0.8em;
+    text-align: center;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    
+}
+
+
+.btn-primary ,.page-item.active .page-link,.btn-primary:visited
+{
+    background-color:#5867dd;
+    border-color:#5867dd;
+}
+
+.btn-light-custom{
+    
+    border: 1px solid #ccc;
+    background-color: #fcfcfc;
+}
+
+.btn-light-custom:hover{
+    
+
+    background-color:#5867dd;
+    filter:brightness(120%);
+    color:white;
+}
+
+.btn-primary:hover
+{
+    background-color:#5867dd;
+    filter:brightness(120%);
+    border-color:#5867dd;
+}
+
+.btn[disabled]{
+    border:1px solid #ccc;
+    background-color: transparent;
+    color:#ccc;
+}
+
+
+#profilelink img{
+    width:48px;
+    border-radius: 50%;
+}
+
+
+#profilelink span{
+    position:relative;
+    top:-5px;
+}
+
+.quick-info .card-body{
+    display: flex;
+}
+
+.quick-info .card-body .icon{
+    display: flex;
+    align-items: center;
+    width: 20%;
+    justify-content: center;
+    font-size: 2.5em;
+}
+
+.quick-info .details h3{
+    font-size: 1.2em;
+}
+
+.quick-info .details{
+    padding-left: 0.5em;
+}
+
+
+@media (max-width:767px) {
+     .leftbar {
+
+  margin-left:-300px
+ }
+}

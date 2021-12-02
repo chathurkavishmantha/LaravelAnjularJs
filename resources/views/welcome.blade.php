@@ -1,170 +1,182 @@
+
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
+	<head>
+		<title>AngularJS PHP CRUD (Create, Read, Update, Delete) using Bootstrap Modal</title>
+		<script src="{{asset('js/jquery.min.js')}}"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+		<script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
+		<script src="{{asset('js/angular-datatables.min.js')}}"></script>
+		<script src="{{asset('js/bootstrap.min.js')}}"></script>
+		<link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
+		<link rel="stylesheet" href="{{asset('css/datatables.bootstrap.css')}}">
 
-        <title>Laravel</title>
+        
+		
+	</head>
+	<body ng-app="crudApp" ng-controller="crudController">
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
-
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
-
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-            
-        </style>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
+        <div class="modal fade" tabindex="-1" role="dialog" id="crudmodal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form method="post" ng-submit="submitForm()">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-danger alert-dismissible" ng-show="error" >
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                
+                            </div>
+                            <div class="form-group">
+                                <label>Enter First Name</label>
+                                <input type="text" name="first_name" ng-model="first_name" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Enter Last Name</label>
+                                <input type="text" name="last_name" ng-model="last_name" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="hidden_id" value="" />
+                            <input type="submit" name="submit" id="submit" class="btn btn-info" value="" />
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
                 </div>
-            @endif
-
-            <div class="content" ng-app="myApp" ng-controller="myCtrl" ng-init="list()">
-                <div class="title m-b-md">
-                    Laravel 6
-                </div>
-                
-
-                <br>
-                Name: <input type="text" name="name" ng-model="name"><br>
-                Description: <input type="text" name="description" ng-model="description"><br>
-                <button type="button" ng-click="save()">save</button>
-                <br>
-                <table border="1">
-                <tr ng-repeat="task in tasks">
-                    <td ng-bind="task.name">
-                    <td ng-bind="task.description">
-                        
-                    </td>
-                </tr>
-                </div>
-                </table>
             </div>
-            
-
         </div>
 
 
+		
+		<div class="container" ng-init="fetchData()">
+			<br />
+				<h3 align="center">AngularJS PHP CRUD (Create, Read, Update, Delete) using Bootstrap Modal</h3>
+			<br />
+			<div class="alert alert-success alert-dismissible" ng-show="success" >
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				
+			</div>
+			<div align="right">
+				<button type="button" name="add_button" ng-click="addData()" class="btn btn-success">Add</button>
+			</div>
+			<br />
+			<div class="table-responsive" style="overflow-x: unset;">
+				<table datatable="ng" dt-options="vm.dtOptions" class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Edit</th>
+							<th>Delete</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="task in tasks">
+							<td ng-bind="task.name"></td>
+                        <td ng-bind="task.description"></td>
+							<td><button type="button" ng-click="fetchSingleData(name.id)" class="btn btn-warning btn-xs">Edit</button></td>
+							<td><button type="button" ng-click="deleteData(name.id)" class="btn btn-danger btn-xs">Delete</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
         
+       
 
 
-        <script type="text/javascript">
-            var app = angular.module('myApp',[]);
-            //controller
-            app.controller('myCtrl', function($scope,$http){
-                $scope.save = function(){
-                    console.log($scope.name); //view consol results
-                    console.log($scope.description); //view consol results
+        <script>
 
-                    $http({
+        var app = angular.module('crudApp', ['datatables']);
+        app.controller('crudController', function($scope, $http){
 
-                        url : "{{URL('api/insert')}}",
-                        method : "POST",
-                        data : {
-                            "name" : $scope.name,
-                            "description" : $scope.description
-                        }
+            $scope.success = false;
 
-                        }).then(function(response){
-                            alert('success');
-                            $scope.list();
-                        },function(response){
-                            alert('failed');
-                        });
+            $scope.error = false;
 
-                    
-                }
-
-                $scope.list = function(){
-                        $http.get("{{ URL('api/show' )}}")
-                        .then(function(response){
-                            $scope.tasks = response.data;
-                        });
-                }
-
-                $scope.edit_task = {};
-                // initialize update action
-                $scope.initEdit = function (index) {
-                    $scope.errors = [];
-                    $scope.edit_task = $scope.tasks[index];
-                    $("#edit_task").modal('show');
-                };
-
-                // update the given task
-                $scope.updateTask = function () {
-                    $http.patch('/task/' + $scope.edit_task.id, {
-                        name: $scope.edit_task.name,
-                        description: $scope.edit_task.description
-                    }).then(function success(e) {
-                        $scope.errors = [];
-                        $("#edit_task").modal('hide');
-                    }, function error(error) {
-                        $scope.recordErrors(error);
+            $scope.fetchData = function(){
+                $http.get("{{ URL('api/show' )}}")
+                    .then(function(response){
+                        $scope.tasks = response.data;
                     });
-                };
-            });
+            };
+
+            $scope.openModal = function(){
+                var modal_popup = angular.element('#crudmodal');
+                modal_popup.modal('show');
+            };
+
+            $scope.closeModal = function(){
+                var modal_popup = angular.element('#crudmodal');
+                modal_popup.modal('hide');
+            };
+
+            $scope.addData = function(){
+                $scope.modalTitle = 'Add Data';
+                $scope.submit_button = 'Insert';
+                $scope.openModal();
+            };
+
+            $scope.submitForm = function(){
+                $http({
+                    method:"POST",
+                    url:"insert.php",
+                    data:{'first_name':$scope.first_name, 'last_name':$scope.last_name, 'action':$scope.submit_button, 'id':$scope.hidden_id}
+                }).success(function(data){
+                    if(data.error != '')
+                    {
+                        $scope.success = false;
+                        $scope.error = true;
+                        $scope.errorMessage = data.error;
+                    }
+                    else
+                    {
+                        $scope.success = true;
+                        $scope.error = false;
+                        $scope.successMessage = data.message;
+                        $scope.form_data = {};
+                        $scope.closeModal();
+                        $scope.fetchData();
+                    }
+                });
+            };
+
+            $scope.fetchSingleData = function(id){
+                $http({
+                    method:"POST",
+                    url:"insert.php",
+                    data:{'id':id, 'action':'fetch_single_data'}
+                }).success(function(data){
+                    $scope.first_name = data.first_name;
+                    $scope.last_name = data.last_name;
+                    $scope.hidden_id = id;
+                    $scope.modalTitle = 'Edit Data';
+                    $scope.submit_button = 'Edit';
+                    $scope.openModal();
+                });
+            };
+
+            $scope.deleteData = function(id){
+                if(confirm("Are you sure you want to remove it?"))
+                {
+                    $http({
+                        method:"POST",
+                        url:"insert.php",
+                        data:{'id':id, 'action':'Delete'}
+                    }).success(function(data){
+                        $scope.success = true;
+                        $scope.error = false;
+                        $scope.successMessage = data.message;
+                        $scope.fetchData();
+                    });	
+                }
+            };
+
+        });
+
         </script>
-    </body>
+	</body>
 </html>
