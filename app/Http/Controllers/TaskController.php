@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use SebastianBergmann\Environment\Console;
 
 class TaskController extends Controller
 {
@@ -14,7 +16,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        return Task::all();
     }
 
     /**
@@ -49,9 +51,26 @@ class TaskController extends Controller
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function show(Task $task)
+    public function show(Request $request, $id)
     {
-        return Task::all();
+    //    $id = '5';
+    // dd($id);
+        $item = Task::find($id);
+ 
+        if(is_null($item)){
+            return response()->json([
+                'error' => true,
+                'message'  => "Record with id # $id not found",
+            ], 404);
+        }
+ 
+        // return view('welcome', compact('item'));
+
+        // return view('welcome')->with('item', $item);
+
+        return response()->json(['data' => $item]);
+
+
     }
 
     /**
@@ -72,9 +91,31 @@ class TaskController extends Controller
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
+    public function update(Request $request, $id)
     {
-        //
+        $validation = Validator::make($request->all(),[ 
+            'name' => 'required',
+            'description' => 'required',
+        ]);
+ 
+        if($validation->fails()){
+            return response()->json([
+                'error' => true,
+                'messages'  => $validation->errors(),
+            ], 200);
+        }
+        else
+        {
+            $item = Task::find($id);
+            $item->name = $request->input('name');
+            $item->description = $request->input('description');
+            $item->save();
+     
+            return response()->json([
+                'error' => false,
+                'item'  => $item,
+            ], 200);
+        }
     }
 
     /**
