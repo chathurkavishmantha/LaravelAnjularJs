@@ -41,25 +41,12 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+        // dd($request);
         // return $request->all();
-        $tasks = new Task;
-        // $tasks->name = $request->input('name');
-        // $tasks->description = $request->input('description');
-        // $tasks->save();
-
-        // return response()->json([
-        //     'error' => false,
-        //     'task'  => $tasks,
-        // ], 200);
-
-        Task::create([
+        return Task::create([
             'name' => $request['name'],
             'description' => $request['description'],
-            
         ]);
-
-        
     }
 
     /**
@@ -85,9 +72,7 @@ class TaskController extends Controller
 
         // return view('welcome')->with('item', $item);
 
-        return response()->json([
-            'tasks' => $tasks
-        ]);
+        return response()->json(['tasks' => $tasks]);
 
 
     }

@@ -23,11 +23,11 @@
                 <form>                    
                     <div class="form-group">
                         <label>Enter First Name</label>
-                        <input type="text"  ng-model="data.name"  id="fName" value = [[name]] class="form-control" />
+                        <input type="text"  ng-model="data.name"  id="fName"  class="form-control" />
                     </div>
                     <div class="form-group">
                         <label>Enter Description </label>
-                        <input type="text"  ng-model="data.description" id="description" value = [[description]] class="form-control" />
+                        <input type="text"  ng-model="data.description" id="description" class="form-control" />
                     </div>
                 </form>
             </div>
@@ -66,7 +66,7 @@
 							<td ng-bind="task.name"></td>
                             <td ng-bind="task.description"></td>
                             <td ng-bind="task.id"></td>
-							<td><button type="button" ng-click="fetchSingleData(edit,task.id)" class="btn btn-warning btn-xs">Edit</button></td>
+							<td><button type="button" ng-click="fetchSingleData(task)" class="btn btn-warning btn-xs">Edit</button></td>
 							<td><button type="button" ng-click="deleteData(task.id)" class="btn btn-danger btn-xs">Delete</button></td>
 						</tr>
 					</tbody>
@@ -111,29 +111,35 @@
                 .catch(() => {});
 
             };
+
+            // $scope.closeModal = function(){
+            //     var modal_popup = angular.element('#crudmodal');
+            //     modal_popup.modal('hide');
+            // };
+
             $scope.addData = function(){
                 // $scope.modalTitle = 'Add_Data';
                 $scope.submit_button = 'Insert';
                 $scope.openModal();
             };
 
-            // $scope.fetchData = function(){
-            //     var url = 'api/' ;
-            //     $http({
-            //         method : 'Get',
-            //         url : url ,
-            //     }).then(function (response) {
-            //         $scope.tasks = response.data.tasks;
-            //     }, function (error) {
-            //         console.log(error);
-            //         alert('This is embarassing. An error has occurred. Please check the log for details');
-            //     });
-            // };            
+            $scope.fetchData = function(){
+                var url = 'api/' ;
+                $http({
+                    method : 'Get',
+                    url : url ,
+                }).then(function (response) {
+                    $scope.tasks = response.data.tasks;
+                }, function (error) {
+                    console.log(error);
+                    alert('This is embarassing. An error has occurred. Please check the log for details');
+                });
+            };            
 
-            // $scope.fetchSingleData = function(data, id){
-            //     $scope.openModal(data, id);
+            $scope.fetchSingleData = function(task){
+                $scope.openModal(task);
 		        
-            // };
+            };
 
 
         }).controller ('CRUDController' , ($http, $scope,$uibModalInstance , Task) => {
@@ -147,30 +153,43 @@
             $scope.cancel = () => {
                 $uibModalInstance.dismiss();
             };
-            
 
             $scope.save = () => {
-
-                // console.log();
-
-                var url = 'api/insert/';
-                var method = 'POST';
                 $http({
-                        method: method,
-                        url: url,
-                        data:{'name':$scope.data.name, 'description':$scope.data.description}
-                        
-                    }).then(function (response) {
-                        console.log(response);
-                        // location.reload();
-                    }), (function (error) {
-                        console.log(error);
-                        alert('This is embarassing. An error has occurred. Please check the log for details');
-                    });
-                    
-                
-                   
+                    method:"POST",
+                    animation: false,
+                    url:"{{ url('api/insert')}}",
+                    data:{'name':$scope.data.name, 'description':$scope.data.description}
+                }).then(function(response){
+                    // console.log(response);
+                    // alert('success');
+                    window.location.reload();
+                },function(response){
+                    alert('failed');
+                });   
             };
+
+
+            // $scope.fetchSingleData = (edit, id) => {
+
+            //     $scope.tasks = null;
+
+            //     var url = 'api/show/';
+
+            //     $http({
+            //         method: 'GET',
+            //         url: url + id,
+            //         data:{'id': $scope.data.id, 'name':$scope.data.name, 'description':$scope.data.description}
+            //     }).then(function(response){
+            //         console.log(response);
+            //         alert('success');
+            //         window.location.reload();
+            //     },function(response){
+            //         alert('failed');
+            //     });
+
+            // };          
+            
 
         });
 
