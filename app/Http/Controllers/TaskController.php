@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use SebastianBergmann\Environment\Console;
 
@@ -16,7 +17,10 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return Task::all();
+        return response() ->json([
+            'error' => false,
+            'tasks' => Task::all(),
+        ], 200);
     }
 
     /**
@@ -37,12 +41,25 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
+        dd($request);
         // return $request->all();
-        return Task::create([
+        $tasks = new Task;
+        // $tasks->name = $request->input('name');
+        // $tasks->description = $request->input('description');
+        // $tasks->save();
+
+        // return response()->json([
+        //     'error' => false,
+        //     'task'  => $tasks,
+        // ], 200);
+
+        Task::create([
             'name' => $request['name'],
             'description' => $request['description'],
+            
         ]);
+
+        
     }
 
     /**
@@ -55,9 +72,9 @@ class TaskController extends Controller
     {
     //    $id = '5';
     // dd($id);
-        $item = Task::find($id);
+        $tasks = Task::find($id);
  
-        if(is_null($item)){
+        if(is_null($tasks)){
             return response()->json([
                 'error' => true,
                 'message'  => "Record with id # $id not found",
@@ -68,7 +85,9 @@ class TaskController extends Controller
 
         // return view('welcome')->with('item', $item);
 
-        return response()->json(['data' => $item]);
+        return response()->json([
+            'tasks' => $tasks
+        ]);
 
 
     }
@@ -93,6 +112,7 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($request);
         $validation = Validator::make($request->all(),[ 
             'name' => 'required',
             'description' => 'required',
@@ -106,14 +126,14 @@ class TaskController extends Controller
         }
         else
         {
-            $item = Task::find($id);
-            $item->name = $request->input('name');
-            $item->description = $request->input('description');
-            $item->save();
+            $tasks = Task::find($id);
+            $tasks->name = $request->input('name');
+            $tasks->description = $request->input('description');
+            $tasks->save();
      
             return response()->json([
                 'error' => false,
-                'item'  => $item,
+                'tasks'  => $tasks,
             ], 200);
         }
     }
@@ -124,8 +144,9 @@ class TaskController extends Controller
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+    public function destroy($id)
     {
-        //
+        // dd($id);
+        // DB::delete('delete from tasks where id = ?',[$id]);
     }
 }
