@@ -13,8 +13,10 @@ Route::group(['prefix' => 'api','namespace' => 'API'], function(){
 
 Route::get('/','TaskController@index');
 Route::get('show/{id}','TaskController@show');
-Route::POST('update','TaskController@update');
-Route::post('insert','TaskController@store');
+Route::POST('update/{id}','TaskController@update');
+// Route::DELETE('delete/{id}','TaskController@destroy');
+Route::post('task','TaskController@store');
+Route::delete('delete/{id}','TaskController@destroy');
 
 
 
