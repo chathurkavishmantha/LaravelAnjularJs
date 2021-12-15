@@ -64,7 +64,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="task in tasks">
+						<tr ng-repeat="task in tasks | orderBy: 'id':false ">
                             <td >@{{task.id}}</td>
 							<td >@{{task.name}}</td>
                             <td >@{{task.description}}</td>
@@ -107,12 +107,12 @@
                         size : 'md',
                         resolve : 
                             { 
-                                'Task' : () =>
+                                'Task' : () => // this taks variable is used to process add delete view edite data through the angular controller over modal.
                                 { 
                                     return task;
                                 } ,
 
-                                'New' : () => { return bNew ;}
+                                'New' : () => { return bNew ;} // this  New variable helps to give state of the button.(when data save and edit using one button)
 
                             }                        
                     }
