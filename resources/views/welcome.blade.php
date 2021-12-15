@@ -33,7 +33,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" type="submit" id="submit"  ng-click="save(state, data.id)" >OK</button>
+                <button class="btn btn-primary" type="submit" id="submit"  ng-click="save()" >@{{bNew ? 'Add' : 'Update'}}</button>
                 <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
             </div>
 
@@ -55,9 +55,10 @@
 				<table  datatable="ng" dt-options="vm.dtOptions" class="table table-bordered table-striped">
 					<thead>
 						<tr>
+                            <th>id</th>
 							<th>First Name</th>
 							<th>Last Name</th>
-							<th>id</th>
+							
 							<th>Edit</th>
 							<th>Delete</th>
 						</tr>
@@ -91,16 +92,13 @@
 
         var app = angular.module('crudApp', ['datatables','ui.bootstrap' , 'ngAnimate']); //defind attribute that imported files in js folder.
 
-        app.controller('crudController', function($scope, $http , $uibModal){ // defind $uibModal attribute that created Main modal's.
-
-            
-              
+        app.controller('crudController', function($scope, $http , $uibModal){ // defind $uibModal attribute that created Main modal's.     
 
             $scope.success = false;
 
             $scope.error = false;
 
-            $scope.openModal = function(task = null){ // create a function to access all data that belogs to the specific modal
+            $scope.openModal = function(task = null , bNew = false){ // create a function to access all data that belogs to the specific modal
 
                var modalInstance =  $uibModal.open( // create a function to access modal.
                     {
@@ -112,7 +110,9 @@
                                 'Task' : () =>
                                 { 
                                     return task;
-                                } 
+                                } ,
+
+                                'New' : () => { return bNew ;}
 
                             }                        
                     }
@@ -124,80 +124,62 @@
 
             };
 
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            //open addDdata modal view
             $scope.addData = function(){
-                // $scope.modalTitle = 'Add_Data';
-                $scope.submit_button = 'Insert';
-                $scope.openModal();
+                $scope.openModal(null ,  true);
             };
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
             //fetch customers listing from 
             $scope.fetchData = function(){
+               
                 var url = 'api/' ;
                 $http({
                     method : 'Get',
                     url : url ,
                 }).then(function (response) {
-                    $scope.tasks = response.data.tasks;
-                    // $scope.data = response.data.tasks;
-                    // console.log($scope.data);
+                    $scope.tasks = response.data.tasks; // fetch data from database.
                 }, function (error) {
                     alert('This is embarassing. An error has occurred. Please check the log for details');
                 });
             };            
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            //open model and display selected data from id.
             $scope.edit = function(task,edit){
-                // $scope.tasks.id = task;
-                // console.log($scope.tasks.id);
-                // var val = $scope.data.task;
-                //     console.log(val);
-
-                // $scope.edit = edit;
-
-                // console.log(edit);
-                // $scope.item = null;
-                $scope.edit = edit;
-        
-                switch (edit) {
-                    case 'edit':
-                        $scope.form_title = "Item Edit";
-                        // console.log($scope.form_title);
-
-                        break;
-                    default:
-                        break;
-                }
-
-
-                $scope.openModal(task,edit);
-		        
+                $scope.openModal(task);   
             };
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-             //fetch customers listing from 
+             //Delete data 
              $scope.deleteData = function(task){
                 var url = 'api/delete/' + task.id;
                 $http({
                     method : 'delete',
                     url : url ,
                 }).then(function (response) {
-                    $scope.tasks = response.data.tasks;
+                    alert('Do you want to delete this record.');
                     window.location.reload();
-
-                    // $scope.data = response.data.tasks;
-                    // console.log($scope.data);
                 }, function (error) {
                     alert('This is embarassing. An error has occurred. Please check the log for details');
                 });
             }; 
             
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-        }).controller ('CRUDController' , ($http, $scope, $uibModalInstance, Task) => {
+        }).controller ('CRUDController' , ($http, $scope, $uibModalInstance, Task , New) => {
 
             $scope.data = Task; // bind data to show model's input fild.
-            // $scope.editData = edit; 
+            console.log(Task); // to view what data comming from that New variable?
+
+            $scope.bNew = New;
+            console.log(New); // to view what data comming from that New variable?
+
 
             $scope.ok = () => {
                 $uibModalInstance.close(true);
@@ -205,36 +187,38 @@
 
             $scope.cancel = () => {
                 $uibModalInstance.dismiss();
+                window.location.reload();
             };
 
-            $scope.save = (state, id) => {
-                
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            // save new data and new edita data
+            $scope.save = () => {   
+
+                var newValue = "false";
                 var url = 'api/task';
                 var method = 'POST';
-                console.log(state);
+                var isTrueSet = New.toString();
+                console.log(isTrueSet); // test New object returening boolean value is now converting to the string value to isTrueSet varible.
+               
                 
+                if ( newValue == isTrueSet) { // To know the New data returening bootean value is equal to the newValue variable.
 
-                //append item id to the URL if the form is in edit mode
-                // if (edit === 'edit') {
-                //     url += "/" + id;
-        
-                //     method = "PUT";
-                // }
+                    url += "/" + $scope.data.id;        
+                    method = "PUT";
+                    console.log(method);
 
+                }
                 $http({
-                    method: method,
-                    animation: false,
-                    url: url,
-                    data:{'name':$scope.data.name, 'description':$scope.data.description}
-                }).then(function(response){
-                    // console.log(response);
-                    $scope.tasks = $scope.data.tasks;
-                    // console.log(val);
-                    alert('success');
-                    // window.location.reload();
-                },function(response){
-                    alert('failed');
-                });   
+                       method: method,
+                       animation: false,
+                       url: url,
+                       data:{ 'name':$scope.data.name, 'description':$scope.data.description}
+                    }).then(function(response){
+                        console.log('success');
+                        window.location.reload();
+                    },function(response){
+                        alert('failed');
+                    }); 
             };       
             
 
