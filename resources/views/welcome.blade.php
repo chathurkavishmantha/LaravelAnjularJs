@@ -33,7 +33,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" type="submit" id="submit"  ng-click="save()" >@{{bNew ? 'Add' : 'Update'}}</button>
+                <button class="btn btn-primary" type="submit" id="submit"  ng-click="save()" >@{{buttonstate ? 'Add' : 'Update'}}</button>
                 <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
             </div>
 
@@ -64,7 +64,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="task in tasks | orderBy: 'id':false ">
+						<tr ng-repeat="task in tasks">
                             <td >@{{task.id}}</td>
 							<td >@{{task.name}}</td>
                             <td >@{{task.description}}</td>
@@ -98,7 +98,7 @@
 
             $scope.error = false;
 
-            $scope.openModal = function(task = null , bNew = false){ // create a function to access all data that belogs to the specific modal
+            $scope.openModal = function(task = null , buttonstate = false){ // create a function to access all data that belogs to the specific modal
 
                var modalInstance =  $uibModal.open( // create a function to access modal.
                     {
@@ -112,7 +112,7 @@
                                     return task;
                                 } ,
 
-                                'New' : () => { return bNew ;} // this  New variable helps to give state of the button.(when data save and edit using one button)
+                                'State' : () => { return buttonstate; } // this  New variable helps to give state of the button.(when data save and edit using one button)
 
                             }                        
                     }
@@ -150,7 +150,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             //open model and display selected data from id.
-            $scope.edit = function(task,edit){
+            $scope.edit = function(task){
                 $scope.openModal(task);   
             };
 
@@ -172,13 +172,13 @@
             
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        }).controller ('CRUDController' , ($http, $scope, $uibModalInstance, Task , New) => {
+        }).controller ('CRUDController' , ($http, $scope, $uibModalInstance, Task , State) => {
 
             $scope.data = Task; // bind data to show model's input fild.
             console.log(Task); // to view what data comming from that New variable?
 
-            $scope.bNew = New;
-            console.log(New); // to view what data comming from that New variable?
+            $scope.buttonstate = State;
+            console.log(State); // to view what data comming from that New variable?
 
 
             $scope.ok = () => {
@@ -197,7 +197,7 @@
                 var newValue = "false";
                 var url = 'api/task';
                 var method = 'POST';
-                var isTrueSet = New.toString();
+                var isTrueSet = State.toString();
                 console.log(isTrueSet); // test New object returening boolean value is now converting to the string value to isTrueSet varible.
                
                 
